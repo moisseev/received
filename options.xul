@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+    <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <setting pref="extensions.received.regexp" title="Regular expression with capturing parentheses" type="string">
+Examples:
+
+(.*)
+         Displays all "Received" headers.
+
+.+from (.+?) by mx\.example\.com 
+        Displays the host where email come from.
+The regular expression should match the first "Received" header added by the recepient's smtp server.
+    </setting>
+</vbox>
