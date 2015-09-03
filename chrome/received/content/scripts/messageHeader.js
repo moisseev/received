@@ -7,21 +7,19 @@ Received.Message.displayReceivedHeader = function() {
     var regexp = prefs.getCharPref("extensions.received.regexp");
     var rowEl = document.getElementById("expandedReceivedRow");
     var hdrEl = document.getElementById("receivedReceivedHeader");
+    var msg = gMessageDisplay.displayedMessage;
 
-    var uri = gMessageDisplay.folderDisplay.selectedMessageUris[0];
-    if (uri == null)
-        return;
-    var hdr = gDBView.msgFolder.GetMessageHeader(gDBView.getKeyAt(gDBView.currentlyDisplayedMessage));
-    if (hdr == null)
-        return;
-    var receivedHeader = hdr.getStringProperty("received");
-    if (receivedHeader == null)
-        return;
+    if (!msg.folder) {
+        rowEl.collapsed = true;
+        return
+    };
 
-    var parsed = Received.parseReceivedHeader(receivedHeader, regexp);
-    rowEl.collapsed = (parsed == null);
-    hdrEl.headerValue = parsed;
-    hdrEl.valid = true;
+    MsgHdrToMimeMessage(msg, null, function(aMsgHdr, aMimeMsg) {
+        var parsed = Received.parseReceivedHeaders(aMimeMsg.headers, regexp);
+        rowEl.collapsed = (parsed.length == 0);
+        hdrEl.headerValue = parsed;
+        hdrEl.valid = true;
+    }, true);
 }
 
 Received.Message.onLoad = function() {
