@@ -23,8 +23,6 @@ Received.Message.displayReceivedHeader = function() {
 }
 
 Received.Message.onLoad = function() {
-    Received.addRecievedHeader();
-
     var listener = {};
     listener.onStartHeaders = function() {};
     listener.onEndHeaders = function() {
