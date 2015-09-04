@@ -6,7 +6,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>received@alexander.moisseev</em:id>
     <em:name>Received</em:name>
-    <em:version>0.1.2</em:version>
+    <em:version>0.2.0</em:version>
     <em:type>2</em:type>
     <em:unpack>false</em:unpack>
     
@@ -14,7 +14,7 @@
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>7.0</em:minVersion>
-        <em:maxVersion>42.0</em:maxVersion>
+        <em:maxVersion>44.0</em:maxVersion>
       </Description>
     </em:targetApplication>
     
