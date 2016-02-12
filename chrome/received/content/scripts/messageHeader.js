@@ -1,3 +1,5 @@
+"use strict";
+
 Received.Message = {};
 
 var prefs = Components.classes["@mozilla.org/preferences-service;1"]

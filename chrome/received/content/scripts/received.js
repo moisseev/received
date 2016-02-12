@@ -1,3 +1,5 @@
+"use strict";
+
 var Received = {};
 
 Received.parseReceivedHeader = function(headerStr, regexp) {
