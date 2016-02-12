@@ -9,8 +9,9 @@ Received.Message.displayReceivedHeader = function() {
     var hdrEl = document.getElementById("receivedReceivedHeader");
     var msg = gMessageDisplay.displayedMessage;
 
+    rowEl.collapsed = true;
+
     if (!msg.folder) {
-        rowEl.collapsed = true;
         return
     };
 
