@@ -2,11 +2,8 @@
 
 Received.Message = {};
 
-var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                .getService(Components.interfaces.nsIPrefBranch);
-
 Received.Message.displayReceivedHeader = function() {
-    var regexp = prefs.getCharPref("extensions.received.regexp");
+    var regexp = Services.prefs.getCharPref("extensions.received.regexp");
     var rowEl = document.getElementById("expandedReceivedRow");
     var hdrEl = document.getElementById("receivedReceivedHeader");
     var msg = gMessageDisplay.displayedMessage;

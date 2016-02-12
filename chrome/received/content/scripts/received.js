@@ -1,5 +1,7 @@
 "use strict";
 
+Components.utils.import("resource://gre/modules/Services.jsm");
+
 var Received = {};
 
 Received.parseReceivedHeader = function(headerStr, regexp) {
