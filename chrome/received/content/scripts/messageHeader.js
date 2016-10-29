@@ -19,7 +19,9 @@ Received.Message.displayReceivedHeader = function() {
         rowEl.collapsed = (parsed.length == 0);
         hdrEl.headerValue = parsed;
         hdrEl.valid = true;
-    }, true);
+    }, true, {
+        partsOnDemand: true
+    });
 }
 
 Received.Message.onLoad = function() {
