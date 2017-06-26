@@ -8,6 +8,6 @@ Examples:
 
 ^from (.+?) by mx\.example\.com 
         Displays the host where email come from.
-The regular expression should match the first "Received" header added by the recepient's smtp server.
+The regular expression should match the first "Received" header added by the recipient's smtp server.
     </setting>
 </vbox>
