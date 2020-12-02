@@ -20,6 +20,7 @@
         "key-spacing": ["error", { "align": "value" }],
         "max-len": ["error", { "code": 120 }],
         "max-lines": ["warn", 350],
+        "max-lines-per-function": ["warn", 100],
         "max-params": ["warn", 5],
         "max-statements": ["warn", 40],
         "multiline-ternary": ["error", "always-multiline"],
@@ -74,7 +75,6 @@
         "MsgCopyMessage": false,
         "MsgHdrToMimeMessage": false,
         "MsgMoveMessage": false,
-        "optionObserver": false,
-        "Services": false
+        "optionObserver": false
     }
 }
