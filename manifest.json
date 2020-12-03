@@ -11,6 +11,12 @@
   "version": "2.0.0",
   "author": "Alexander Moisseev (moiseev@mezonplus.ru)",
   "homepage_url": "https://github.com/moisseev/received",
+  "icons": {
+    "16": "icon.svg",
+    "32": "icon.svg",
+    "48": "icon.svg",
+    "96": "icon.svg"
+  },
   "background": {
     "scripts": ["/background.js"]
   },
