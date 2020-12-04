@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-		"eslint": "*",
+        "eslint": "*",
         "stylelint-config-standard": "*"
     }
 }
