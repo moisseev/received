@@ -32,7 +32,7 @@ browser.messageDisplay.onMessageDisplayed.addListener((tab, message) => {
             browser.storage.local.get().then((res) => {
                 const parsed = parseReceivedHeaders(headers, res.regexp);
                 browser.displayReceivedHeader.setReceivedHeaderValue(tab.id, parsed);
-                browser.displayReceivedHeader.setReceivedHeaderHidden(tab.id, false);
+                browser.displayReceivedHeader.setReceivedHeaderHidden(tab.id, !parsed.length);
             });
         } else {
             browser.displayReceivedHeader.setReceivedHeaderHidden(tab.id, true);
