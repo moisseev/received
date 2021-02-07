@@ -17,23 +17,11 @@
         "func-style": ["error", "declaration"],
         "function-call-argument-newline": "off",
         "id-length": ["error", { "min": 1 }],
-        "key-spacing": ["error", { "align": "value" }],
         "max-len": ["error", { "code": 120 }],
-        "max-lines": ["warn", 350],
         "max-lines-per-function": ["warn", 100],
         "max-params": ["warn", 5],
         "max-statements": ["warn", 40],
         "multiline-ternary": ["error", "always-multiline"],
-        "new-cap": ["error", { "capIsNewExceptions": [
-            "BrowserOpenAddonsMgr",
-            "ConvertToUnicode",
-            "GetMsgHdrForKey",
-            "GetMessageHeader",
-            "MsgCopyMessage",
-            "MsgHdrToMimeMessage",
-            "MsgMoveMessage",
-            "QueryInterface"
-        ]}],
         "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 4 }],
         "no-alert": "off",
         "no-continue": "off",
@@ -62,19 +50,5 @@
         }],
         "strict": ["error", "global"],
         "wrap-iife": ["error", "any"]
-    },
-    "globals": {
-        "AddonManager": false,
-        "BrowserOpenAddonsMgr": false,
-        "Components": false,
-        "FolderDisplayWidget": false,
-        "gDBView": false,
-        "gMessageDisplay": false,
-        "gMessageListeners": false,
-        "MailUtils": false,
-        "MsgCopyMessage": false,
-        "MsgHdrToMimeMessage": false,
-        "MsgMoveMessage": false,
-        "optionObserver": false
     }
 }

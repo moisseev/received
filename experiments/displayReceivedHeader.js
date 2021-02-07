@@ -1,4 +1,4 @@
-/* global ChromeUtils:readonly */
+/* global ChromeUtils, Components */
 /* exported displayReceivedHeader */
 
 "use strict";

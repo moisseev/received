@@ -1,4 +1,4 @@
-/* global browser:readonly */
+/* global browser */
 
 "use strict";
 
