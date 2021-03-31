@@ -11,8 +11,8 @@ function saveOptions(e) {
 }
 
 function restoreOptions() {
-    browser.storage.local.get().then((res) => {
-        document.querySelector("#regexp").value = res.regexp;
+    browser.storage.local.get("regexp").then(({regexp}) => {
+        document.querySelector("#regexp").value = regexp;
     });
 }
 

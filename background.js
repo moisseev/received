@@ -19,8 +19,8 @@ function parseReceivedHeaders(headers, regexp) {
     return received;
 }
 
-browser.storage.local.get().then((res) => {
-    if (!res.regexp) {
+browser.storage.local.get("regexp").then(({regexp}) => {
+    if (!regexp) {
         browser.storage.local.set({regexp: "(.*)"});
     }
 });
@@ -29,8 +29,8 @@ function displayReceivedHeader(tabId, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
         const headers = messagepart.headers.received;
         if (headers) {
-            browser.storage.local.get().then((res) => {
-                const parsed = parseReceivedHeaders(headers, res.regexp);
+            browser.storage.local.get("regexp").then(({regexp}) => {
+                const parsed = parseReceivedHeaders(headers, regexp);
                 browser.displayReceivedHeader.setReceivedHeaderValue(tabId, parsed);
                 browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !parsed.length);
             });
