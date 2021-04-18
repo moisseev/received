@@ -26,6 +26,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
 
                     if (expandedHeaders2) {
                         const element = document.createElement("tr");
+                        element.hidden = true;
                         element.id = "expandedReceivedRow";
 
                         const headerRowTitle = document.createElement("th");
