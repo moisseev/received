@@ -77,6 +77,10 @@
             The same as above, but for accounts on different mail servers:
             mx.example.com, mx.example.net, Yandex.Mail Service.
         </p>
+        <p>
+            <input type="text" readonly=true value="^from (.+?) by mx\.example\.com.+for.+(; .+)$" />
+            Using two capturing groups to display host and time stamp.
+        </p>
     </div>
     <script src="options.js"></script>
 </body>
