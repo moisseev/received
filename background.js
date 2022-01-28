@@ -24,24 +24,27 @@ function parseReceivedHeaders(headers, regexp) {
     return received;
 }
 
-browser.storage.local.get("regexp").then(({regexp}) => {
-    if (!regexp) {
-        browser.storage.local.set({regexp: "(.*)"});
-    }
+browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, regexp}) => {
+    if (!headerNumbers) browser.storage.local.set({headerNumbers: ""});
+    if (!regexp) browser.storage.local.set({regexp: "(.*)"});
 });
 
 function displayReceivedHeader(tabId, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
-        const headers = messagepart.headers.received;
-        if (headers) {
-            browser.storage.local.get("regexp").then(({regexp}) => {
+        browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, regexp}) => {
+            const headers = [];
+            headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
+                const header = messagepart.headers.received[i];
+                if (typeof header !== "undefined") headers.push(header);
+            });
+            if (headers.length) {
                 const parsed = parseReceivedHeaders(headers, regexp);
                 browser.displayReceivedHeader.setReceivedHeaderValue(tabId, parsed);
                 browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !parsed.length);
-            });
-        } else {
-            browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, true);
-        }
+            } else {
+                browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, true);
+            }
+        });
     });
 }
 

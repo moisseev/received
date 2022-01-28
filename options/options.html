@@ -33,6 +33,10 @@
             .addon-detail-row:first-of-type {
                 border-top: none;
             }
+            .remark {
+                font-size: smaller;
+                color: var(--in-content-deemphasized-text);
+            }
             .received-examples {
                 color: var(--in-content-deemphasized-text);
             }
@@ -50,10 +54,19 @@
 <body>
     <div class="addon-detail-row">
         <form>
-            <label for="regexp">
-                Regular expression with capturing parentheses:
-            </label>
-            <input type="text" id="regexp" />
+            <p>
+                <label for="header-numbers">
+                    Parse only specified Received headers or all headers if empty:
+                </label>
+                <input type="text" id="header-numbers" />
+                <span class="remark">A comma-separated list of the Received header sequence numbers.</span>
+            </p>
+            <p>
+                <label for="regexp">
+                    Regular expression with capturing parentheses:
+                </label>
+                <input type="text" id="regexp" />
+            </p>
             <button type="submit">Save</button>
         </form>
     </div>
