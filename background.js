@@ -32,11 +32,14 @@ browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, reg
 function displayReceivedHeader(tabId, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
         browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, regexp}) => {
-            const headers = [];
+            let headers = [];
+            let numberFound = false;
             headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
+                if (!isNaN(i)) numberFound = true;
                 const header = messagepart.headers.received[i];
                 if (typeof header !== "undefined") headers.push(header);
             });
+            if (!numberFound) headers = messagepart.headers.received;
             if (headers.length) {
                 const parsed = parseReceivedHeaders(headers, regexp);
                 browser.displayReceivedHeader.setReceivedHeaderValue(tabId, parsed);
