@@ -34,12 +34,17 @@ function displayReceivedHeader(tabId, messageId) {
         browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, regexp}) => {
             let headers = [];
             let numberFound = false;
-            headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
-                if (!isNaN(i)) numberFound = true;
-                const header = messagepart.headers.received[i];
-                if (typeof header !== "undefined") headers.push(header);
-            });
-            if (!numberFound) headers = messagepart.headers.received;
+
+            const {received} = messagepart.headers;
+            if (typeof received !== "undefined") {
+                headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
+                    if (!isNaN(i)) numberFound = true;
+                    const header = received[i];
+                    if (typeof header !== "undefined") headers.push(header);
+                });
+                if (!numberFound) headers = received;
+            }
+
             if (headers.length) {
                 const parsed = parseReceivedHeaders(headers, regexp);
                 browser.displayReceivedHeader.setReceivedHeaderValue(tabId, parsed);
