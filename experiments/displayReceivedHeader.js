@@ -6,15 +6,7 @@
 const {ExtensionCommon} = ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
 const {Services} = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
-const {platformVersion} = Services.appinfo;
-let messageHeaderId = "extraHeadersArea";
-let headerRowTitleLabelClass = "message-header-label";
-if (Services.vc.compare(platformVersion, "100.0a1") === -1) {
-    messageHeaderId = "expandedHeaders2";
-    headerRowTitleLabelClass = "headerName";
-}
-
-// eslint-disable-next-line no-var, vars-on-top
+// eslint-disable-next-line no-var
 var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
     getAPI(context) {
         function getDocumentByTabId(tabId) {
@@ -30,7 +22,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                 addHeadersToWindowById(windowId) {
                     const window = Services.wm.getOuterWindowWithId(windowId);
                     const {document} = window;
-                    const expandedHeaders2 = document.getElementById(messageHeaderId);
+                    const expandedHeaders2 = document.getElementById("expandedHeaders2");
 
                     if (expandedHeaders2) {
                         const element = document.createElement("tr");
@@ -40,7 +32,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                         const headerRowTitle = document.createElement("th");
                         const headerRowTitleLabel = document.createXULElement("label");
                         headerRowTitleLabel.id = "expandedReceivedLabel";
-                        headerRowTitleLabel.classList.add(headerRowTitleLabelClass);
+                        headerRowTitleLabel.classList.add("headerName");
                         headerRowTitleLabel.value = "Received";
                         headerRowTitleLabel.control = "receivedReceivedHeader";
                         headerRowTitle.appendChild(headerRowTitleLabel);
