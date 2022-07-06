@@ -31,43 +31,44 @@ browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, reg
 
 function displayReceivedHeader(tabId, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
-        browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"]).then(({headerNumbers, regexp, removeDuplicates, singleLine}) => {
-            let headers = [];
-            let numberFound = false;
+        browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"])
+            .then(({headerNumbers, regexp, removeDuplicates, singleLine}) => {
+                let headers = [];
+                let numberFound = false;
 
-            const {received} = messagepart.headers;
-            if (typeof received !== "undefined") {
-                headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
-                    if (!isNaN(i)) numberFound = true;
-                    const header = received[i];
-                    if (typeof header !== "undefined") headers.push(header);
-                });
-                if (!numberFound) headers = received;
-            }
-
-            if (headers.length) {
-                const parsed = parseReceivedHeaders(headers, regexp);
-                let filteredParsed = [];
-
-                if (removeDuplicates) {
-                    let alreadyAdded = [];
-                    for (let item of parsed) {
-                        const key = item.join("_");
-                        if (alreadyAdded.indexOf(key) === -1) {
-                            filteredParsed.push(item);
-                            alreadyAdded.push(key);
-                        }
-                     }
-                } else {
-                    filteredParsed = parsed;
+                const {received} = messagepart.headers;
+                if (typeof received !== "undefined") {
+                    headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
+                        if (!isNaN(i)) numberFound = true;
+                        const header = received[i];
+                        if (typeof header !== "undefined") headers.push(header);
+                    });
+                    if (!numberFound) headers = received;
                 }
 
-                browser.displayReceivedHeader.setReceivedHeaderValue(tabId, filteredParsed, singleLine);
-                browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !filteredParsed.length);
-            } else {
-                browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, true);
-            }
-        });
+                if (headers.length) {
+                    const parsed = parseReceivedHeaders(headers, regexp);
+                    let filteredParsed = [];
+
+                    if (removeDuplicates) {
+                        const alreadyAdded = [];
+                        for (const item of parsed) {
+                            const key = item.join("_");
+                            if (alreadyAdded.indexOf(key) === -1) {
+                                filteredParsed.push(item);
+                                alreadyAdded.push(key);
+                            }
+                        }
+                    } else {
+                        filteredParsed = parsed;
+                    }
+
+                    browser.displayReceivedHeader.setReceivedHeaderValue(tabId, filteredParsed, singleLine);
+                    browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !filteredParsed.length);
+                } else {
+                    browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, true);
+                }
+            });
     });
 }
 

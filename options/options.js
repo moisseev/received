@@ -14,12 +14,13 @@ function saveOptions(e) {
 }
 
 function restoreOptions() {
-    browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"]).then(({headerNumbers, regexp, removeDuplicates, singleLine}) => {
-        document.querySelector("#header-numbers").value = headerNumbers;
-        document.querySelector("#regexp").value = regexp;
-        document.querySelector("#remove-duplicates").checked = removeDuplicates;
-        document.querySelector("#single-line").checked = singleLine;
-    });
+    browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"])
+        .then(({headerNumbers, regexp, removeDuplicates, singleLine}) => {
+            document.querySelector("#header-numbers").value = headerNumbers;
+            document.querySelector("#regexp").value = regexp;
+            document.querySelector("#remove-duplicates").checked = removeDuplicates;
+            document.querySelector("#single-line").checked = singleLine;
+        });
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
