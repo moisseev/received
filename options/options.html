@@ -22,8 +22,9 @@
                 margin-left: var(--input-text-x-margin);
                 text-overflow: ellipsis;
             }
+            input[type="checkbox"],
             label {
-                font-weight: bold;
+                vertical-align: middle;
             }
             .addon-detail-row {
                 display: unset;
@@ -67,16 +68,16 @@
                 <input type="text" id="regexp" />
             </p>
             <p>
-                <label for="remove-duplicates">
-                    Remove duplicates:
-                </label>
                 <input type="checkbox" id="remove-duplicates" />
+                <label for="remove-duplicates">
+                    Remove duplicates
+                </label>
             </p>
             <p>
-                <label for="single-line">
-                    Single line:
-                </label>
                 <input type="checkbox" id="single-line" />
+                <label for="single-line">
+                    Single line
+                </label>
             </p>
             <button type="submit">Save</button>
         </form>
