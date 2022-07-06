@@ -31,7 +31,7 @@ browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, reg
 
 function displayReceivedHeader(tabId, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
-        browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, regexp}) => {
+        browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"]).then(({headerNumbers, regexp, removeDuplicates, singleLine}) => {
             let headers = [];
             let numberFound = false;
 
@@ -47,8 +47,23 @@ function displayReceivedHeader(tabId, messageId) {
 
             if (headers.length) {
                 const parsed = parseReceivedHeaders(headers, regexp);
-                browser.displayReceivedHeader.setReceivedHeaderValue(tabId, parsed);
-                browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !parsed.length);
+                let filteredParsed = [];
+
+                if (removeDuplicates) {
+                    let alreadyAdded = [];
+                    for (let item of parsed) {
+                        const key = item.join("_");
+                        if (alreadyAdded.indexOf(key) === -1) {
+                            filteredParsed.push(item);
+                            alreadyAdded.push(key);
+                        }
+                     }
+                } else {
+                    filteredParsed = parsed;
+                }
+
+                browser.displayReceivedHeader.setReceivedHeaderValue(tabId, filteredParsed, singleLine);
+                browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !filteredParsed.length);
             } else {
                 browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, true);
             }

@@ -80,24 +80,43 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                     mailHeaderfield.hidden = hidden;
                     if (majorVersion >= 100) syncGridColumnWidths(document);
                 },
-                setReceivedHeaderValue(tabId, headersArray) {
+                setReceivedHeaderValue(tabId, headersArray, singleLine) {
                     const document = getDocumentByTabId(tabId);
                     if (!document) return;
 
                     const headerRowValue = document.createElement("td");
                     headerRowValue.id = "receivedReceivedHeader";
+                    let mailHeaderfield;
+
+                    if (singleLine) {
+                        mailHeaderfield = document.createXULElement("mail-headerfield");
+                        mailHeaderfield.flex = "1";
+                    }
 
                     headersArray.forEach(function (header) {
-                        const mailHeaderfield = document.createXULElement("mail-headerfield");
-                        mailHeaderfield.flex = "1";
+                        if (!singleLine) {
+                            mailHeaderfield = document.createXULElement("mail-headerfield");
+                            mailHeaderfield.flex = "1";
+                        }
+
+                        if (mailHeaderfield.textContent !== "") {
+                            mailHeaderfield.textContent += ", ";
+                        }
+
                         header.forEach(function (string) {
                             mailHeaderfield.textContent += string;
                         });
 
-                        headerRowValue.appendChild(mailHeaderfield);
+                        if (!singleLine) {
+                            headerRowValue.appendChild(mailHeaderfield);
+                        }
                     });
 
-                    const mailHeaderfield = document.getElementById("expandedReceivedRow");
+                    if (singleLine) {
+                        headerRowValue.appendChild(mailHeaderfield);
+                    }
+
+                    mailHeaderfield = document.getElementById("expandedReceivedRow");
                     const oldChild = document.getElementById("receivedReceivedHeader");
                     mailHeaderfield.replaceChild(headerRowValue, oldChild);
                 },

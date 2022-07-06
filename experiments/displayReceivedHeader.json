@@ -47,6 +47,11 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "singleLine",
+            "description": "List all headers on a single line",
+            "type": "boolean"
           }
         ]
       }
