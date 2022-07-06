@@ -32,7 +32,7 @@ browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, reg
 function displayReceivedHeader(tabId, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
         browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"])
-            .then(({headerNumbers, regexp, removeDuplicates, singleLine}) => {
+            .then(({headerNumbers, regexp, removeDuplicates, singleLine = false}) => {
                 let headers = [];
                 let numberFound = false;
 
