@@ -86,37 +86,38 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
 
                     const headerRowValue = document.createElement("td");
                     headerRowValue.id = "receivedReceivedHeader";
-                    let mailHeaderfield;
 
-                    if (singleLine) {
-                        mailHeaderfield = document.createXULElement("mail-headerfield");
+                    function initMailHeaderfield() {
+                        const mailHeaderfield = document.createXULElement("mail-headerfield");
                         mailHeaderfield.flex = "1";
+                        return mailHeaderfield;
                     }
 
-                    headersArray.forEach(function (header) {
-                        if (!singleLine) {
-                            mailHeaderfield = document.createXULElement("mail-headerfield");
-                            mailHeaderfield.flex = "1";
-                        }
+                    if (singleLine) {
+                        const mailHeaderfield = initMailHeaderfield();
 
-                        if (mailHeaderfield.textContent !== "") {
-                            mailHeaderfield.textContent += ", ";
-                        }
-
-                        header.forEach(function (string) {
-                            mailHeaderfield.textContent += string;
+                        headersArray.forEach(function (header) {
+                            if (mailHeaderfield.textContent !== "") {
+                                mailHeaderfield.textContent += ", ";
+                            }
+                            header.forEach(function (string) {
+                                mailHeaderfield.textContent += string;
+                            });
                         });
 
-                        if (!singleLine) {
-                            headerRowValue.appendChild(mailHeaderfield);
-                        }
-                    });
-
-                    if (singleLine) {
                         headerRowValue.appendChild(mailHeaderfield);
+                    } else {
+                        headersArray.forEach(function (header) {
+                            const mailHeaderfield = initMailHeaderfield();
+                            header.forEach(function (string) {
+                                mailHeaderfield.textContent += string;
+                            });
+
+                            headerRowValue.appendChild(mailHeaderfield);
+                        });
                     }
 
-                    mailHeaderfield = document.getElementById("expandedReceivedRow");
+                    const mailHeaderfield = document.getElementById("expandedReceivedRow");
                     const oldChild = document.getElementById("receivedReceivedHeader");
                     mailHeaderfield.replaceChild(headerRowValue, oldChild);
                 },
