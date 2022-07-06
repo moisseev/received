@@ -98,7 +98,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
 
                         headersArray.forEach(function (header) {
                             if (mailHeaderfield.textContent !== "") {
-                                mailHeaderfield.textContent += ", ";
+                                mailHeaderfield.textContent += " → ";
                             }
                             header.forEach(function (string) {
                                 mailHeaderfield.textContent += string;
