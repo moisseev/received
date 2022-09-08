@@ -65,8 +65,6 @@ function displayReceivedHeader(tabId, messageId) {
 
                     browser.displayReceivedHeader.setReceivedHeaderValue(tabId, filteredParsed, singleLine);
                     browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !filteredParsed.length);
-                } else {
-                    browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, true);
                 }
             });
     });
@@ -91,6 +89,17 @@ browser.windows.onCreated.addListener((window) => {
     browser.displayReceivedHeader.addHeadersToWindowById(window.id);
 });
 
+let lastDisplayedMessageId = null;
+
 browser.messageDisplay.onMessageDisplayed.addListener((tab, message) => {
+    lastDisplayedMessageId = message.id;
     displayReceivedHeader(tab.id, message.id);
+});
+
+browser.mailTabs.onSelectedMessagesChanged.addListener((tab, selectedMessages) => {
+    if (selectedMessages.messages.length !== 1) return;
+    // The same message was re-selected (e.g. after column sorting)
+    if (selectedMessages.messages[0].id === lastDisplayedMessageId) return;
+    // Hide header until message is loaded
+    browser.displayReceivedHeader.setReceivedHeaderHidden(tab.id, true);
 });
