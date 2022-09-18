@@ -47,11 +47,23 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                             element.appendChild(headerRowTitleLabel);
                         }
 
-                        const headerRowValue = document.createElement("td");
+                        const expandedReceivedBox = document.createElement("td");
+                        expandedReceivedBox.id = "expandedReceivedBox";
+
+                        const headerRowValue = document.createElement("span");
                         headerRowValue.id = "receivedReceivedHeader";
 
-                        element.appendChild(headerRowValue);
+                        expandedReceivedBox.appendChild(headerRowValue);
+                        element.appendChild(expandedReceivedBox);
                         expandedHeaders2.appendChild(element);
+
+                        if (majorVersion >= 100) {
+                            expandedReceivedBox.addEventListener("contextmenu", (event) => {
+                                const popup = document.getElementById("simpleCopyPopup");
+                                popup.headerField = event.target;
+                                popup.openPopupAtScreen(event.screenX, event.screenY, true);
+                            });
+                        }
                     } else {
                         throw Error("Could not find the expandedHeaders2 element");
                     }
@@ -84,12 +96,13 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                     const document = getDocumentByTabId(tabId);
                     if (!document) return;
 
-                    const headerRowValue = document.createElement("td");
+                    const headerRowValue = document.createElement("span");
                     headerRowValue.id = "receivedReceivedHeader";
 
                     function initMailHeaderfield() {
                         const mailHeaderfield = document.createXULElement("mail-headerfield");
                         mailHeaderfield.flex = "1";
+                        mailHeaderfield.classList.add("header-row");
                         return mailHeaderfield;
                     }
 
@@ -117,7 +130,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                         });
                     }
 
-                    const mailHeaderfield = document.getElementById("expandedReceivedRow");
+                    const mailHeaderfield = document.getElementById("expandedReceivedBox");
                     const oldChild = document.getElementById("receivedReceivedHeader");
                     mailHeaderfield.replaceChild(headerRowValue, oldChild);
                 },
