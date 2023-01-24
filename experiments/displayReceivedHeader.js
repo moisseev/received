@@ -47,10 +47,10 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                             element.appendChild(headerRowTitleLabel);
                         }
 
-                        const expandedReceivedBox = document.createElement("td");
+                        const expandedReceivedBox = document.createElement("div");
                         expandedReceivedBox.id = "expandedReceivedBox";
 
-                        const headerRowValue = document.createElement("span");
+                        const headerRowValue = document.createElement("div");
                         headerRowValue.id = "receivedReceivedHeader";
 
                         expandedReceivedBox.appendChild(headerRowValue);
@@ -96,7 +96,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                     const document = getDocumentByTabId(tabId);
                     if (!document) return;
 
-                    const headerRowValue = document.createElement("span");
+                    const headerRowValue = document.createElement("div");
                     headerRowValue.id = "receivedReceivedHeader";
 
                     function initMailHeaderfield() {
@@ -120,8 +120,9 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
 
                         headerRowValue.appendChild(mailHeaderfield);
                     } else {
-                        headersArray.forEach(function (header) {
+                        headersArray.forEach(function (header, i) {
                             const mailHeaderfield = initMailHeaderfield();
+                            if (i !== 0 && majorVersion > 78) mailHeaderfield.style.marginTop = "3px";
                             header.forEach(function (string) {
                                 mailHeaderfield.textContent += string;
                             });
