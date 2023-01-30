@@ -40,7 +40,8 @@ function displayReceivedHeader(tabId, messageId) {
                 if (typeof received !== "undefined") {
                     headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
                         if (!isNaN(i)) numberFound = true;
-                        const header = received[i];
+                        // .at() method is not supported on TB78
+                        const header = received[(i < 0) ? received.length + i : i];
                         if (typeof header !== "undefined") headers.push(header);
                     });
                     if (!numberFound) headers = received;

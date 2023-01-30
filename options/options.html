@@ -58,8 +58,8 @@
                 <label for="header-numbers">
                     Parse only specified Received headers or all headers if empty:
                 </label>
-                <input type="text" id="header-numbers" pattern="^ *(\d+ *(, *\d+ *)*)?$" />
-                <span class="remark">A comma-separated list of the Received header sequence numbers.</span>
+                <input type="text" id="header-numbers" pattern="^ *(-?\d+ *(, *-?\d+ *)*)?$" />
+                <span class="remark">A comma-separated list of the Received header sequence numbers. Negative indices count backwards from the bottom of the message.</span>
             </p>
             <p>
                 <label for="regexp">
