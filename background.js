@@ -35,16 +35,41 @@ function displayReceivedHeader(tabId, messageId) {
             .then(({headerNumbers, regexp, removeDuplicates, singleLine = false}) => {
                 let headers = [];
                 let numberFound = false;
+                let separator = "🡄";
 
                 const {received} = messagepart.headers;
                 if (typeof received !== "undefined") {
+                    const idxDiff = [];
+                    let prev = null;
                     headerNumbers.split(",").map((item) => parseInt(item, 10)).forEach((i) => {
                         if (!isNaN(i)) numberFound = true;
                         // .at() method is not supported on TB78
                         const header = received[(i < 0) ? received.length + i : i];
-                        if (typeof header !== "undefined") headers.push(header);
+                        if (typeof header !== "undefined") {
+                            headers.push(header);
+
+                            if (singleLine) {
+                                if (prev !== null) idxDiff.push(i - prev);
+                                prev = i;
+                            }
+                        }
                     });
-                    if (!numberFound) headers = received;
+                    if (numberFound) {
+                        if (singleLine) {
+                            // ascending
+                            if (idxDiff.every((n) => n > 0)) {
+                            // descending
+                            } else if (idxDiff.every((n) => n < 0)) {
+                                separator = "🡆";
+                            // out of order
+                            } else {
+                                separator = "🔹";
+                            }
+                        }
+                    } else {
+                        headers = received;
+                    }
+
                 }
 
                 if (headers.length) {
@@ -64,7 +89,8 @@ function displayReceivedHeader(tabId, messageId) {
                         filteredParsed = parsed;
                     }
 
-                    browser.displayReceivedHeader.setReceivedHeaderValue(tabId, filteredParsed, singleLine);
+                    browser.displayReceivedHeader
+                        .setReceivedHeaderValue(tabId, filteredParsed, singleLine, " " + separator + " ");
                     browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !filteredParsed.length);
                 }
             });

@@ -52,6 +52,11 @@
             "name": "singleLine",
             "description": "List all headers on a single line",
             "type": "boolean"
+          },
+          {
+            "name": "separator",
+            "description": "Single line items separator string",
+            "type": "string"
           }
         ]
       }

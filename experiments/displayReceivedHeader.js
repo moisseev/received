@@ -92,7 +92,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
                     mailHeaderfield.hidden = hidden;
                     if (majorVersion >= 100) syncGridColumnWidths(document);
                 },
-                setReceivedHeaderValue(tabId, headersArray, singleLine) {
+                setReceivedHeaderValue(tabId, headersArray, singleLine, separator) {
                     const document = getDocumentByTabId(tabId);
                     if (!document) return;
 
@@ -111,7 +111,7 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
 
                         headersArray.forEach(function (header) {
                             if (mailHeaderfield.textContent !== "") {
-                                mailHeaderfield.textContent += " → ";
+                                mailHeaderfield.textContent += separator;
                             }
                             header.forEach(function (string) {
                                 mailHeaderfield.textContent += string;
