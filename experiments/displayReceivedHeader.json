@@ -3,22 +3,16 @@
     "namespace": "displayReceivedHeader",
     "functions": [
       {
-        "name": "addHeadersToWindowById",
-        "type": "function",
-        "parameters": [
-          {
-            "name": "windowId",
-            "type": "integer"
-          }
-        ]
-      },
-      {
         "name": "setReceivedHeaderHidden",
         "description": "Set hidden attribute to the Received header",
         "type": "function",
         "parameters": [
           {
-            "name": "tabId",
+            "name": "windowId",
+            "type": "integer"
+          },
+          {
+            "name": "tabIndex",
             "type": "integer"
           },
           {
@@ -34,7 +28,11 @@
         "type": "function",
         "parameters": [
           {
-            "name": "tabId",
+            "name": "windowId",
+            "type": "integer"
+          },
+          {
+            "name": "tabIndex",
             "type": "integer"
           },
           {

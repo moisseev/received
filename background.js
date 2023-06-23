@@ -29,7 +29,7 @@ browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, reg
     if (!regexp) browser.storage.local.set({regexp: "(.*)"});
 });
 
-function displayReceivedHeader(tabId, messageId) {
+function displayReceivedHeader(windowId, tabIndex, messageId) {
     browser.messages.getFull(messageId).then((messagepart) => {
         browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"])
             .then(({headerNumbers, regexp, removeDuplicates, singleLine = false}) => {
@@ -90,37 +90,37 @@ function displayReceivedHeader(tabId, messageId) {
                     }
 
                     browser.displayReceivedHeader
-                        .setReceivedHeaderValue(tabId, filteredParsed, singleLine, " " + separator + " ");
-                    browser.displayReceivedHeader.setReceivedHeaderHidden(tabId, !filteredParsed.length);
+                        .setReceivedHeaderValue(windowId, tabIndex, filteredParsed, singleLine, " " + separator + " ");
+                    browser.displayReceivedHeader.setReceivedHeaderHidden(windowId, tabIndex, !filteredParsed.length);
                 }
             });
     });
 }
 
-browser.windows.getAll({populate: true, windowTypes: ["normal", "messageDisplay"]}).then((windows) => {
-    windows.forEach(function (window) {
-        browser.displayReceivedHeader.addHeadersToWindowById(window.id);
-        window.tabs.filter((tab) => tab.active)
-            .forEach(function (tab) {
-                browser.messageDisplay.getDisplayedMessage(tab.id).then((message) => {
-                    if (!message) return;
-                    displayReceivedHeader(tab.id, message.id);
-                });
-            });
-    });
-});
+browser.runtime.getBrowserInfo().then((browserInfo) => {
+    const [majorVersion] = browserInfo.version.split(".", 1);
 
-browser.windows.onCreated.addListener((window) => {
-    // Skip popup, devtools, etc.
-    if (window.type !== "normal" && window.type !== "messageDisplay") return;
-    browser.displayReceivedHeader.addHeadersToWindowById(window.id);
+    browser.windows.getAll({populate: true, windowTypes: ["normal", "messageDisplay"]}).then((windows) => {
+        windows.forEach(function (window) {
+            window.tabs
+                // Prior TB 111 messages are not displayed in inactive tabs
+                .filter((tab) => (majorVersion >= 111 || tab.active) &&
+                    (["mail", "messageDisplay"].some((t) => t === tab.type)))
+                .forEach((tab) => {
+                    browser.messageDisplay.getDisplayedMessage(tab.id).then((message) => {
+                        if (!message) return;
+                        displayReceivedHeader(tab.windowId, tab.index, message.id);
+                    });
+                });
+        });
+    });
 });
 
 let lastDisplayedMessageId = null;
 
 browser.messageDisplay.onMessageDisplayed.addListener((tab, message) => {
     lastDisplayedMessageId = message.id;
-    displayReceivedHeader(tab.id, message.id);
+    displayReceivedHeader(tab.windowId, tab.index, message.id);
 });
 
 browser.mailTabs.onSelectedMessagesChanged.addListener((tab, selectedMessages) => {
@@ -128,5 +128,5 @@ browser.mailTabs.onSelectedMessagesChanged.addListener((tab, selectedMessages) =
     // The same message was re-selected (e.g. after column sorting)
     if (selectedMessages.messages[0].id === lastDisplayedMessageId) return;
     // Hide header until message is loaded
-    browser.displayReceivedHeader.setReceivedHeaderHidden(tab.id, true);
+    browser.displayReceivedHeader.setReceivedHeaderHidden(tab.windowId, tab.index, true);
 });
