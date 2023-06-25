@@ -16,59 +16,51 @@ var displayReceivedHeader = class extends ExtensionCommon.ExtensionAPI {
         }
 
         function addHeadersToWindowById(windowId, tabIndex) {
-            function addHeaders(document) {
-                const expandedHeaders2 = document
-                    .getElementById(majorVersion < 100 ? "expandedHeaders2" : "extraHeadersArea");
-
-                if (expandedHeaders2) {
-                    const element = document.createElement(majorVersion < 100 ? "tr" : "div");
-                    element.hidden = true;
-                    element.id = "expandedReceivedRow";
-                    element.classList.add("message-header-row");
-
-                    const headerRowTitleLabel = document.createXULElement("label");
-                    headerRowTitleLabel.id = "expandedReceivedLabel";
-                    headerRowTitleLabel.classList.add(majorVersion < 100
-                        ? "headerName"
-                        : "message-header-label");
-                    headerRowTitleLabel.value = "Received";
-                    headerRowTitleLabel.control = "receivedReceivedHeader";
-
-                    if (majorVersion < 100) {
-                        const headerRowTitle = document.createElement("th");
-                        headerRowTitle.appendChild(headerRowTitleLabel);
-                        element.appendChild(headerRowTitle);
-                    } else {
-                        element.appendChild(headerRowTitleLabel);
-                    }
-
-                    const expandedReceivedBox = document.createElement("div");
-                    expandedReceivedBox.id = "expandedReceivedBox";
-
-                    const headerRowValue = document.createElement("div");
-                    headerRowValue.id = "receivedReceivedHeader";
-
-                    expandedReceivedBox.appendChild(headerRowValue);
-                    element.appendChild(expandedReceivedBox);
-                    expandedHeaders2.appendChild(element);
-
-                    if (majorVersion >= 100) {
-                        expandedReceivedBox.addEventListener("contextmenu", (event) => {
-                            const popup = document.getElementById("simpleCopyPopup");
-                            popup.headerField = event.target;
-                            popup.openPopupAtScreen(event.screenX, event.screenY, true);
-                        });
-                    }
-                } else {
-                    throw Error("Could not find the expandedHeaders2 element");
-                }
-            }
-
             const document = getDocumentByTabIndex(windowId, tabIndex);
-            if (majorVersion < 111 || document.readyState === "complete") {
-                addHeaders(document);
+            const expandedHeaders2 = document
+                .getElementById(majorVersion < 100 ? "expandedHeaders2" : "extraHeadersArea");
+
+            if (expandedHeaders2) {
+                const element = document.createElement(majorVersion < 100 ? "tr" : "div");
+                element.hidden = true;
+                element.id = "expandedReceivedRow";
+                element.classList.add("message-header-row");
+
+                const headerRowTitleLabel = document.createXULElement("label");
+                headerRowTitleLabel.id = "expandedReceivedLabel";
+                headerRowTitleLabel.classList.add(majorVersion < 100
+                    ? "headerName"
+                    : "message-header-label");
+                headerRowTitleLabel.value = "Received";
+                headerRowTitleLabel.control = "receivedReceivedHeader";
+
+                if (majorVersion < 100) {
+                    const headerRowTitle = document.createElement("th");
+                    headerRowTitle.appendChild(headerRowTitleLabel);
+                    element.appendChild(headerRowTitle);
+                } else {
+                    element.appendChild(headerRowTitleLabel);
+                }
+
+                const expandedReceivedBox = document.createElement("div");
+                expandedReceivedBox.id = "expandedReceivedBox";
+
+                const headerRowValue = document.createElement("div");
+                headerRowValue.id = "receivedReceivedHeader";
+
+                expandedReceivedBox.appendChild(headerRowValue);
+                element.appendChild(expandedReceivedBox);
+                expandedHeaders2.appendChild(element);
+
+                if (majorVersion >= 100) {
+                    expandedReceivedBox.addEventListener("contextmenu", (event) => {
+                        const popup = document.getElementById("simpleCopyPopup");
+                        popup.headerField = event.target;
+                        popup.openPopupAtScreen(event.screenX, event.screenY, true);
+                    });
+                }
             } else {
-                document.onload = () => addHeaders(document);
+                throw Error("Could not find the expandedHeaders2 element");
             }
         }
 
