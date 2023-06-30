@@ -1,10 +1,10 @@
-/* global ChromeUtils */
+/* global ChromeUtils, globalThis */
 /* exported displayReceivedHeader */
 
 "use strict";
 
 const {ExtensionCommon} = ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
-const {Services} = ChromeUtils.import("resource://gre/modules/Services.jsm");
+const Services = globalThis.Services || ChromeUtils.import("resource://gre/modules/Services.jsm").Services;
 const [majorVersion] = Services.appinfo.platformVersion.split(".", 1);
 
 // eslint-disable-next-line no-var
