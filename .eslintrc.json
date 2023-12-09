@@ -55,6 +55,9 @@
         "@stylistic/space-before-function-paren": ["error", {
             "anonymous": "always",
             "named": "never"
-        }]
+        }],
+
+        // Temporarily disabled rules
+        "@stylistic/indent-binary-ops": "off"
     }
 }
