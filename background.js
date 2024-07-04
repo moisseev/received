@@ -24,15 +24,10 @@ function parseReceivedHeaders(headers, regexp) {
     return received;
 }
 
-browser.storage.local.get(["headerNumbers", "regexp"]).then(({headerNumbers, regexp}) => {
-    if (!headerNumbers) browser.storage.local.set({headerNumbers: ""});
-    if (!regexp) browser.storage.local.set({regexp: "(.*)"});
-});
-
-function displayReceivedHeader(windowId, tabIndex, messageId) {
+function displayReceivedHeader(windowId, tabIndex, messageId, majorVersion) {
     browser.messages.getFull(messageId).then((messagepart) => {
-        browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine"])
-            .then(({headerNumbers, regexp, removeDuplicates, singleLine = false}) => {
+        browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine", "substituteFWS"])
+            .then(({headerNumbers, regexp, removeDuplicates, singleLine = false, substituteFWS = true}) => {
                 let headers = [];
                 let numberFound = false;
                 let separator = "🡄";
@@ -73,6 +68,13 @@ function displayReceivedHeader(windowId, tabIndex, messageId) {
                 }
 
                 if (headers.length) {
+                    if (majorVersion >= 128 && substituteFWS) {
+                        // Substitute folding white spaces (FWS)
+                        const foldingWhiteSpaceRegex = /[\t ]+/g;
+                        headers.forEach((header, i) => (headers[i] = header.replace(foldingWhiteSpaceRegex, " ")));
+                    }
+
+
                     const parsed = parseReceivedHeaders(headers, regexp);
                     let filteredParsed = [];
 
@@ -97,8 +99,18 @@ function displayReceivedHeader(windowId, tabIndex, messageId) {
     });
 }
 
+let lastDisplayedMessageId = null;
+
 browser.runtime.getBrowserInfo().then((browserInfo) => {
     const [majorVersion] = browserInfo.version.split(".", 1);
+
+    // Default options
+    browser.storage.local.get(["headerNumbers", "regexp", "substituteFWS"])
+        .then(({headerNumbers, regexp, substituteFWS}) => {
+            if (!headerNumbers) browser.storage.local.set({headerNumbers: ""});
+            if (!regexp) browser.storage.local.set({regexp: "(.*)"});
+            if (majorVersion >= 128 && !substituteFWS) browser.storage.local.set({substituteFWS: true});
+        });
 
     browser.windows.getAll({populate: true, windowTypes: ["normal", "messageDisplay"]}).then((windows) => {
         windows.forEach(function (window) {
@@ -109,18 +121,16 @@ browser.runtime.getBrowserInfo().then((browserInfo) => {
                 .forEach((tab) => {
                     browser.messageDisplay.getDisplayedMessage(tab.id).then((message) => {
                         if (!message) return;
-                        displayReceivedHeader(tab.windowId, tab.index, message.id);
+                        displayReceivedHeader(tab.windowId, tab.index, message.id, majorVersion);
                     });
                 });
         });
     });
-});
 
-let lastDisplayedMessageId = null;
-
-browser.messageDisplay.onMessageDisplayed.addListener((tab, message) => {
-    lastDisplayedMessageId = message.id;
-    displayReceivedHeader(tab.windowId, tab.index, message.id);
+    browser.messageDisplay.onMessageDisplayed.addListener((tab, message) => {
+        lastDisplayedMessageId = message.id;
+        displayReceivedHeader(tab.windowId, tab.index, message.id, majorVersion);
+    });
 });
 
 browser.mailTabs.onSelectedMessagesChanged.addListener((tab, selectedMessages) => {
