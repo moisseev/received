@@ -49,6 +49,17 @@
                 border-color: var(--in-content-border-color);
                 box-shadow: none;
             }
+            .error-message {
+                color: var(--in-content-border-invalid, #ff0039);
+                font-size: smaller;
+                display: none;
+                margin-left: var(--input-text-x-margin);
+            }
+            input.invalid {
+                outline: 2px solid var(--in-content-border-invalid, #ff0039) !important;
+                outline-offset: -1px;
+                -moz-outline-radius: 4px;
+            }
         </style>
     </head>
 
@@ -67,6 +78,7 @@
                     Regular expression with capturing parentheses:
                 </label>
                 <input type="text" id="regexp" />
+                <span class="error-message" id="regexp-error"></span>
             </p>
             <p id="substitute-fws-option" hidden>
                 <input type="checkbox" id="substitute-fws" />
@@ -87,7 +99,7 @@
                     Single line
                 </label>
             </p>
-            <button type="submit">Save</button>
+            <button type="submit" id="save-button">Save</button>
         </form>
     </div>
     <div class="addon-detail-row received-examples">

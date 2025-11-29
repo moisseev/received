@@ -2,6 +2,16 @@
 
 "use strict";
 
+function validateRegexp(value) {
+    try {
+        // eslint-disable-next-line no-new
+        new RegExp(value);
+        return {valid: true};
+    } catch (err) {
+        return {error: err.message, valid: false};
+    }
+}
+
 function restoreOptions() {
     browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine", "substituteFWS"])
         .then(({headerNumbers, regexp, removeDuplicates, singleLine, substituteFWS}) => {
@@ -14,6 +24,34 @@ function restoreOptions() {
 }
 document.addEventListener("DOMContentLoaded", restoreOptions);
 
+document.addEventListener("DOMContentLoaded", () => {
+    const regexpInput = document.querySelector("#regexp");
+    const errorSpan = document.querySelector("#regexp-error");
+    const saveButton = document.querySelector("#save-button");
+
+    function updateValidationUI(validation) {
+        if (validation.valid) {
+            regexpInput.classList.remove("invalid");
+            errorSpan.style.display = "none";
+            errorSpan.textContent = "";
+            saveButton.disabled = false;
+        } else {
+            regexpInput.classList.add("invalid");
+            errorSpan.textContent = validation.error;
+            errorSpan.style.display = "block";
+            saveButton.disabled = true;
+        }
+    }
+
+    function validateInput() {
+        const validation = validateRegexp(regexpInput.value);
+        updateValidationUI(validation);
+    }
+
+    regexpInput.addEventListener("input", validateInput);
+    saveButton.addEventListener("mouseenter", validateInput);
+});
+
 
 browser.runtime.getBrowserInfo().then((browserInfo) => {
     const [majorVersion] = browserInfo.version.split(".", 1);
@@ -23,9 +61,21 @@ browser.runtime.getBrowserInfo().then((browserInfo) => {
     function saveOptions(e) {
         e.preventDefault();
 
+        const regexpValue = document.querySelector("#regexp").value;
+        const validation = validateRegexp(regexpValue);
+
+        if (!validation.valid) {
+            const regexpInput = document.querySelector("#regexp");
+            const errorSpan = document.querySelector("#regexp-error");
+            regexpInput.classList.add("invalid");
+            errorSpan.textContent = validation.error;
+            errorSpan.style.display = "block";
+            return;
+        }
+
         browser.storage.local.set({
             headerNumbers: document.querySelector("#header-numbers").value,
-            regexp: document.querySelector("#regexp").value,
+            regexp: regexpValue,
             removeDuplicates: document.querySelector("#remove-duplicates").checked,
             singleLine: document.querySelector("#single-line").checked,
 
