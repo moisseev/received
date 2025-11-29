@@ -2,8 +2,8 @@
 
 "use strict";
 
-function parseReceivedHeader(headerStr, regexp) {
-    const captured = headerStr.match(new RegExp(regexp));
+function parseReceivedHeader(headerStr, regexpObj) {
+    const captured = headerStr.match(regexpObj);
     if (captured === null) return null;
     captured.shift();
     // If the capturing group is optional ("* "or "?" quantifier) and didn’t match, its value is set to undefined.
@@ -15,9 +15,10 @@ function parseReceivedHeader(headerStr, regexp) {
 }
 
 function parseReceivedHeaders(headers, regexp) {
+    const regexpObj = new RegExp(regexp);
     const received = [];
     headers.forEach(function (header) {
-        const parsed = parseReceivedHeader(header, regexp);
+        const parsed = parseReceivedHeader(header, regexpObj);
         if (parsed !== null)
             received.push(parsed);
     });
