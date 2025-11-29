@@ -107,9 +107,10 @@ browser.runtime.getBrowserInfo().then((browserInfo) => {
     // Default options
     browser.storage.local.get(["headerNumbers", "regexp", "substituteFWS"])
         .then(({headerNumbers, regexp, substituteFWS}) => {
-            if (!headerNumbers) browser.storage.local.set({headerNumbers: ""});
-            if (!regexp) browser.storage.local.set({regexp: "(.*)"});
-            if (majorVersion >= 128 && !substituteFWS) browser.storage.local.set({substituteFWS: true});
+            if (typeof headerNumbers === "undefined") browser.storage.local.set({headerNumbers: ""});
+            if (typeof regexp === "undefined") browser.storage.local.set({regexp: "(.*)"});
+            if (majorVersion >= 128 && typeof substituteFWS === "undefined")
+                browser.storage.local.set({substituteFWS: true});
         });
 
     browser.windows.getAll({populate: true, windowTypes: ["normal", "messageDisplay"]}).then((windows) => {
