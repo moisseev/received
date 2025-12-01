@@ -12,6 +12,43 @@ function validateRegexp(value) {
     }
 }
 
+function validateHeaderNumbers(value) {
+    // Pattern matches: empty string or comma-separated integers (positive or negative)
+    const pattern = /^ *(-?\d+ *(, *-?\d+ *)*)?$/;
+    if (!pattern.test(value)) {
+        return {error: "Invalid format. Use comma-separated integers (e.g., \"0,1,2\" or \"-1,-2\")", valid: false};
+    }
+    return {valid: true};
+}
+
+// Validation configuration
+const validationConfig = [
+    {id: "header-numbers", validator: validateHeaderNumbers},
+    {id: "regexp", validator: validateRegexp}
+];
+
+function validateField(id, validator) {
+    const inputElement = document.querySelector(`#${id}`);
+    const errorSpan = document.querySelector(`#${id}-error`);
+    const validation = validator(inputElement.value);
+
+    if (validation.valid) {
+        inputElement.classList.remove("invalid");
+        errorSpan.style.display = "none";
+        errorSpan.textContent = "";
+    } else {
+        inputElement.classList.add("invalid");
+        errorSpan.textContent = validation.error;
+        errorSpan.style.display = "block";
+    }
+
+    return validation.valid;
+}
+
+function validateAllFields() {
+    return validationConfig.every(({id, validator}) => validateField(id, validator));
+}
+
 function restoreOptions() {
     browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine", "substituteFWS"])
         .then(({headerNumbers, regexp, removeDuplicates, singleLine, substituteFWS}) => {
@@ -25,31 +62,27 @@ function restoreOptions() {
 document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const regexpInput = document.querySelector("#regexp");
-    const errorSpan = document.querySelector("#regexp-error");
     const saveButton = document.querySelector("#save-button");
 
-    function updateValidationUI(validation) {
-        if (validation.valid) {
-            regexpInput.classList.remove("invalid");
-            errorSpan.style.display = "none";
-            errorSpan.textContent = "";
-            saveButton.disabled = false;
-        } else {
-            regexpInput.classList.add("invalid");
-            errorSpan.textContent = validation.error;
-            errorSpan.style.display = "block";
-            saveButton.disabled = true;
-        }
+    function updateSaveButtonState() {
+        const hasInvalidFields = document.querySelectorAll("input.invalid").length > 0;
+        saveButton.disabled = hasInvalidFields;
     }
 
-    function validateInput() {
-        const validation = validateRegexp(regexpInput.value);
-        updateValidationUI(validation);
-    }
+    // Set up real-time validation for all configured fields
+    validationConfig.forEach(({id, validator}) => {
+        const inputElement = document.querySelector(`#${id}`);
+        inputElement.addEventListener("input", () => {
+            validateField(id, validator);
+            updateSaveButtonState();
+        });
+    });
 
-    regexpInput.addEventListener("input", validateInput);
-    saveButton.addEventListener("mouseenter", validateInput);
+    // Validate all fields on save button hover
+    saveButton.addEventListener("mouseenter", () => {
+        validateAllFields();
+        updateSaveButtonState();
+    });
 });
 
 
@@ -61,21 +94,12 @@ browser.runtime.getBrowserInfo().then((browserInfo) => {
     function saveOptions(e) {
         e.preventDefault();
 
-        const regexpValue = document.querySelector("#regexp").value;
-        const validation = validateRegexp(regexpValue);
-
-        if (!validation.valid) {
-            const regexpInput = document.querySelector("#regexp");
-            const errorSpan = document.querySelector("#regexp-error");
-            regexpInput.classList.add("invalid");
-            errorSpan.textContent = validation.error;
-            errorSpan.style.display = "block";
-            return;
-        }
+        // Validate all fields before saving
+        if (!validateAllFields()) return;
 
         browser.storage.local.set({
             headerNumbers: document.querySelector("#header-numbers").value,
-            regexp: regexpValue,
+            regexp: document.querySelector("#regexp").value,
             removeDuplicates: document.querySelector("#remove-duplicates").checked,
             singleLine: document.querySelector("#single-line").checked,
 
