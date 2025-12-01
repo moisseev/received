@@ -115,17 +115,31 @@ browser.runtime.getBrowserInfo().then((browserInfo) => {
         });
 
     browser.windows.getAll({populate: true, windowTypes: ["normal", "messageDisplay"]}).then((windows) => {
+        const tabPromises = [];
+
         windows.forEach(function (window) {
             window.tabs
                 // Prior TB 111 messages are not displayed in inactive tabs
                 .filter((tab) => (majorVersion >= 111 || tab.active) &&
                     (["mail", "messageDisplay"].some((t) => t === tab.type)))
                 .forEach((tab) => {
-                    browser.messageDisplay.getDisplayedMessage(tab.id).then((message) => {
-                        if (!message) return;
+                    tabPromises.push(browser.messageDisplay.getDisplayedMessage(tab.id).then((message) => {
+                        if (!message) return null;
                         displayReceivedHeader(tab.windowId, tab.index, message.id, majorVersion);
-                    });
+                        return null;
+                    }));
                 });
+        });
+
+        // Process all tabs in parallel
+        Promise.allSettled(tabPromises).then((results) => {
+            const failures = results.filter((r) => r.status === "rejected");
+            if (failures.length > 0) {
+                // eslint-disable-next-line no-console
+                console.error(`Failed to initialize ${failures.length} of ${results.length} tabs`);
+                // eslint-disable-next-line no-console
+                failures.forEach((f) => console.error(f.reason));
+            }
         });
     });
 

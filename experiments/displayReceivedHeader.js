@@ -1,4 +1,4 @@
-/* global ChromeUtils, globalThis */
+/* global ChromeUtils */
 /* exported displayReceivedHeader */
 
 "use strict";

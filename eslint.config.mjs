@@ -8,7 +8,7 @@ export default [
     stylistic.configs.all,
     {
         languageOptions: {
-            ecmaVersion: 8,
+            ecmaVersion: 2020,
             globals: {
                 ...globals.browser,
             },
