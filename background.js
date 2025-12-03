@@ -124,9 +124,8 @@ browser.runtime.getBrowserInfo().then((browserInfo) => {
                     (["mail", "messageDisplay"].some((t) => t === tab.type)))
                 .forEach((tab) => {
                     tabPromises.push(browser.messageDisplay.getDisplayedMessage(tab.id).then((message) => {
-                        if (!message) return null;
+                        if (!message) return;
                         displayReceivedHeader(tab.windowId, tab.index, message.id, majorVersion);
-                        return null;
                     }));
                 });
         });
