@@ -82,12 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
             updateSaveButtonState();
         });
     });
-
-    // Validate all fields on save button hover
-    saveButton.addEventListener("mouseenter", () => {
-        validateAllFields();
-        updateSaveButtonState();
-    });
 });
 
 
