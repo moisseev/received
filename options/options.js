@@ -59,9 +59,10 @@ function restoreOptions() {
             document.querySelector("#substitute-fws").checked = substituteFWS;
         });
 }
-document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.addEventListener("DOMContentLoaded", () => {
+    restoreOptions();
+
     const saveButton = document.querySelector("#save-button");
 
     function updateSaveButtonState() {
