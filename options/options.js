@@ -50,7 +50,7 @@ function validateAllFields() {
 }
 
 function restoreOptions() {
-    browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine", "substituteFWS"])
+    return browser.storage.local.get(["headerNumbers", "regexp", "removeDuplicates", "singleLine", "substituteFWS"])
         .then(({headerNumbers, regexp, removeDuplicates, singleLine, substituteFWS}) => {
             document.querySelector("#header-numbers").value = headerNumbers;
             document.querySelector("#regexp").value = regexp;
@@ -61,14 +61,18 @@ function restoreOptions() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    restoreOptions();
-
     const saveButton = document.querySelector("#save-button");
 
     function updateSaveButtonState() {
         const hasInvalidFields = document.querySelectorAll("input.invalid").length > 0;
         saveButton.disabled = hasInvalidFields;
     }
+
+    restoreOptions().then(() => {
+        // Validate loaded values
+        validateAllFields();
+        updateSaveButtonState();
+    });
 
     // Set up real-time validation for all configured fields
     validationConfig.forEach(({id, validator}) => {
